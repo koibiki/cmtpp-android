@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'key0'
             keyPassword '123456'
-            storeFile file('C:/Users/host/.gradle/test.jks')
+            storeFile file('../test.jks')
             storePassword '123456'
         }
     }
@@ -38,6 +38,11 @@ android {
     }
     buildTypes {
         release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
