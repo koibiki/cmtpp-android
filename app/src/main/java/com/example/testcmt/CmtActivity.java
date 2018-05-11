@@ -5,11 +5,15 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageView;
 
 import com.example.opencv.CameraBridgeView;
 import com.example.opencv.OpenCvCameraView;
+import com.example.view.ScaleViewGroup;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
@@ -39,6 +43,9 @@ public class CmtActivity extends Activity implements CameraBridgeView.CvCameraVi
             }
         }
     };
+    private ScaleViewGroup svg;
+    private ImageView si;
+    private ScaleViewGroup.Box mBox;
 
     public CmtActivity() {
         Log.i(TAG, "Instantiated new " + this.getClass());
@@ -58,6 +65,11 @@ public class CmtActivity extends Activity implements CameraBridgeView.CvCameraVi
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
 
         mOpenCvCameraView.setCvCameraViewListener(this);
+
+        si = findViewById(R.id.si);
+        svg = findViewById(R.id.svg);
+        svg.setScalableView(si);
+        si.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -89,9 +101,55 @@ public class CmtActivity extends Activity implements CameraBridgeView.CvCameraVi
 
     @Override
     public Mat onCameraFrame(CameraBridgeView.CvCameraViewFrame inputFrame) {
-        return new Mat(orientationFrame(inputFrame.gray().nativeObj));
+        if (sStatusTracking) {
+            Log.w(TAG, "sStatusTracking");
+            return new Mat(testBox(inputFrame.rgba().nativeObj, mBox.left, mBox.top, mBox.width, mBox.height));
+        } else {
+            return new Mat(rotateFrame(inputFrame.rgba().nativeObj));
+        }
     }
 
-    private native long orientationFrame(long frame);
+    private native long rotateFrame(long frame);
+
+    private native long track(long frame, int left, int top, int width, int height);
+
+    private native long testBox(long frame, int left, int top, int width, int height);
+
+    public void reset(View view) {
+        svg.resetScalableView();
+        svg.setScalable(false);
+        si.setVisibility(View.INVISIBLE);
+    }
+
+    private static final int STATUS_SELECTING = 0;
+    private static final int STATUS_INIT = 1;
+    private int STATUS_BUTTON = STATUS_INIT;
+
+    private static boolean sStatusTracking = false;
+
+    public void select_obj(View view) {
+        Button button = (Button) view;
+        if (STATUS_BUTTON == STATUS_INIT) {
+            svg.setScalable(true);
+            si.setVisibility(View.VISIBLE);
+            button.setText("confirm obj");
+            confirmObj();
+        } else if (STATUS_BUTTON == STATUS_SELECTING) {
+            svg.setScalable(false);
+            si.setVisibility(View.INVISIBLE);
+            button.setText("select obj");
+        }
+        STATUS_BUTTON = (STATUS_BUTTON + 1) % 2;
+    }
+
+    private void confirmObj() {
+        ScaleViewGroup.Box box = svg.getBoxCoor();
+    }
+
+    public void test_box(View view) {
+        mBox = svg.getBoxCoor();
+        sStatusTracking = true;
+    }
+
 
 }

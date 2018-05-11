@@ -30,4 +30,8 @@ public class MainActivity extends AppCompatActivity {
     public void enter_cmt(View view) {
         startActivity(new Intent(this, CmtActivity.class));
     }
+
+    public void enter_scale_image(View view) {
+        startActivity(new Intent(this, ScaleImageActivity.class));
+    }
 }
