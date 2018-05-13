@@ -149,6 +149,7 @@ public class CmtActivity extends Activity implements CameraBridgeView.CvCameraVi
     public void test_box(View view) {
         mBox = svg.getBoxCoor();
         sStatusTracking = true;
+        si.setVisibility(View.INVISIBLE);
     }
 
 

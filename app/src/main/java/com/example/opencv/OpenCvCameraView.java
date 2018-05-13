@@ -279,7 +279,7 @@ public class OpenCvCameraView extends CameraBridgeView implements Camera.Preview
 
                 if (!mStopThread && hasFrame) {
                     if (!mFrameChain[1 - mChainIdx].empty()) {
-                        Log.w("OpenCvCamera", "mChainId:" + mChainIdx);
+                        Log.d(TAG, "mChainId:" + mChainIdx);
                         deliverAndDrawFrame(mCameraFrame[1 - mChainIdx]);
                     }
                 }
