@@ -45,12 +45,6 @@
             android:onClick="select_obj"
             android:text="select_obj" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="test_box"
-            android:text="test box" />
-
     </LinearLayout>
 
 </LinearLayout>

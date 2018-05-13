@@ -32,6 +32,5 @@ void orientationFrame(cv::Mat &src);
 Mat display(Mat &im, CMT &cmt);
 
 extern "C"
-JNIEXPORT jlong JNICALL
-Java_com_example_testcmt_CmtActivity_testBox(JNIEnv *env, jobject instance, jlong frame, jint left,
-                                             jint top, jint width, jint height);
+JNIEXPORT void JNICALL
+Java_com_example_testcmt_CmtActivity_clear(JNIEnv *env, jobject instance);

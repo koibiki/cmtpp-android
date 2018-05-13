@@ -90,6 +90,7 @@ public class CmtActivity extends Activity implements CameraBridgeView.CvCameraVi
         super.onDestroy();
         if (mOpenCvCameraView != null) {
             mOpenCvCameraView.disableView();
+            clear();
         }
     }
 
@@ -103,7 +104,7 @@ public class CmtActivity extends Activity implements CameraBridgeView.CvCameraVi
     public Mat onCameraFrame(CameraBridgeView.CvCameraViewFrame inputFrame) {
         if (sStatusTracking) {
             Log.w(TAG, "sStatusTracking");
-            return new Mat(testBox(inputFrame.rgba().nativeObj, mBox.left, mBox.top, mBox.width, mBox.height));
+            return new Mat(track(inputFrame.rgba().nativeObj, mBox.left, mBox.top, mBox.width, mBox.height));
         } else {
             return new Mat(rotateFrame(inputFrame.rgba().nativeObj));
         }
@@ -113,7 +114,7 @@ public class CmtActivity extends Activity implements CameraBridgeView.CvCameraVi
 
     private native long track(long frame, int left, int top, int width, int height);
 
-    private native long testBox(long frame, int left, int top, int width, int height);
+    private native void clear();
 
     public void reset(View view) {
         svg.resetScalableView();
@@ -136,6 +137,8 @@ public class CmtActivity extends Activity implements CameraBridgeView.CvCameraVi
             confirmObj();
         } else if (STATUS_BUTTON == STATUS_SELECTING) {
             svg.setScalable(false);
+            mBox = svg.getBoxCoor();
+            sStatusTracking = true;
             si.setVisibility(View.INVISIBLE);
             button.setText("select obj");
         }
@@ -145,12 +148,5 @@ public class CmtActivity extends Activity implements CameraBridgeView.CvCameraVi
     private void confirmObj() {
         ScaleViewGroup.Box box = svg.getBoxCoor();
     }
-
-    public void test_box(View view) {
-        mBox = svg.getBoxCoor();
-        sStatusTracking = true;
-        si.setVisibility(View.INVISIBLE);
-    }
-
 
 }
